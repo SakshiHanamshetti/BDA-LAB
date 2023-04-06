@@ -1,0 +1,112 @@
+$ mongosh
+Current Mongosh Log ID:	642e6444b7741676125f41ed
+Connecting to:		mongodb://127.0.0.1:27017/?directConnection=true&serverSelectionTimeoutMS=2000&appName=mongosh+1.8.0
+Using MongoDB:		6.0.5
+Using Mongosh:		1.8.0
+
+For mongosh info see: https://docs.mongodb.com/mongodb-shell/
+
+------
+   The server generated these startup warnings when booting
+   2023-04-06T17:14:39.677+05:30: Using the XFS filesystem is strongly recommended with the WiredTiger storage engine. See http://dochub.mongodb.org/core/prodnotes-filesystem
+   2023-04-06T11:44:41.521+05:30: Access control is not enabled for the database. Read and write access to data and configuration is unrestricted
+------
+
+------
+   Enable MongoDB's free cloud-based monitoring service, which will then receive and display
+   metrics about your deployment (disk utilization, CPU, operation statistics, etc).
+   
+   The monitoring data will be available on a MongoDB website with a unique URL accessible to you
+   and anyone you share the URL with. MongoDB may use this information to make product
+   improvements and to suggest MongoDB products and deployment options to you.
+   
+   To enable free monitoring, run the following command: db.enableFreeMonitoring()
+   To permanently disable this reminder, run the following command: db.disableFreeMonitoring()
+------
+
+test> use myDB;
+switched to db myDB
+myDB> db;
+myDB
+myDB> show dbs;
+admin   40.00 KiB
+config  72.00 KiB
+local   72.00 KiB
+myDB> db.createCollection("Student");
+{ ok: 1 }
+myDB> db.Student.drop();
+true
+
+myDB> db.createCollection("Student");
+{ ok: 1 }
+
+myDB> db.Student.insert({_id:1,StudName:"MichelleJacintha",Grade:"VII",Hobbies:"InternetSurfing"});
+DeprecationWarning: Collection.insert() is deprecated. Use insertOne, insertMany, or bulkWrite.
+{ acknowledged: true, insertedIds: { '0': 1 } }
+
+
+myDB> db.Student.update({_id:3,StudName:"AryanDavid",Grade:"VII"},{$set:{Hobbies:"Skating"}},{upsert:true});
+DeprecationWarning: Collection.update() is deprecated. Use updateOne, updateMany, or bulkWrite.
+{
+  acknowledged: true,
+  insertedId: 3,
+  matchedCount: 0,
+  modifiedCount: 0,
+  upsertedCount: 1
+}
+
+myDB> db.Student.find({StudName:"AryanDavid"});
+[
+  { _id: 3, Grade: 'VII', StudName: 'AryanDavid', Hobbies: 'Skating' }
+]
+myDB> db.Student.find({},{StudName:1,Grade:1,_id:0});
+[
+  { StudName: 'MichelleJacintha', Grade: 'VII' },
+  { Grade: 'VII', StudName: 'AryanDavid' }
+]
+myDB> db.Student.find({Grade:{$eq:'VII'}}).pretty();
+[
+  {
+    _id: 1,
+    StudName: 'MichelleJacintha',
+    Grade: 'VII',
+    Hobbies: 'InternetSurfing'
+  },
+  { _id: 3, Grade: 'VII', StudName: 'AryanDavid', Hobbies: 'Skating' }
+]
+myDB> db.Student.find({Hobbies:{$in:['Chess','Skating']}}).pretty();
+[
+  { _id: 3, Grade: 'VII', StudName: 'AryanDavid', Hobbies: 'Skating' }
+]
+myDB> db.Student.find({StudName:/^M/}).pretty();
+[
+  {
+    _id: 1,
+    StudName: 'MichelleJacintha',
+    Grade: 'VII',
+    Hobbies: 'InternetSurfing'
+  }
+]
+myDB> db.Student.find({StudName:/e/}).pretty();
+[
+  {
+    _id: 1,
+    StudName: 'MichelleJacintha',
+    Grade: 'VII',
+    Hobbies: 'InternetSurfing'
+  }
+]
+myDB> db.Student.count();
+DeprecationWarning: Collection.count() is deprecated. Use countDocuments or estimatedDocumentCount.
+2
+myDB> db.Student.find().sort({StudName:-1}).pretty();
+[
+  {
+    _id: 1,
+    StudName: 'MichelleJacintha',
+    Grade: 'VII',
+    Hobbies: 'InternetSurfing'
+  },
+  { _id: 3, Grade: 'VII', StudName: 'AryanDavid', Hobbies: 'Skating' }
+]
+

@@ -1,0 +1,86 @@
+cqlsh:employee2> use employee;
+cqlsh:employee> describe tables;
+
+employee_info
+
+cqlsh:employee> select * from employee_info
+            ... ;
+
+ emp_id | date_of_joining                 | dept_name | designation | emp_name | salary
+--------+---------------------------------+-----------+-------------+----------+--------
+      1 | 2012-03-25 18:30:00.000000+0000 |     sales |          HR |   Sakshi |  20000
+
+(1 rows)
+
+cqlsh:employee> BEGIN BATCH
+            ... INSERT INTO employee_info(Emp_Id,Emp_Name,Date_Of_Joining,Designation,Salary,Dept_Name)
+            ... VALUES(2,'Diya','2012-05-01','SD',30000,'Software')
+            ... INSERT INTO employee_info(Emp_Id,Emp_Name,Date_Of_Joining,Designation,Salary,Dept_Name)
+            ... VALUES(3,'Hemang','2013-03-02','Manager',20000,'Marketing')
+            ... INSERT INTO employee_info(Emp_Id,Emp_Name,Date_Of_Joining,Designation,Salary,Dept_Name)
+            ... VALUES(4,'Atharva','2013-05-04','Designer',24000,'Software')
+            ... APPLY BATCH;
+cqlsh:employee> select * from Employee_info;
+
+ emp_id | date_of_joining                 | dept_name | designation | emp_name | salary
+--------+---------------------------------+-----------+-------------+----------+--------
+      1 | 2012-03-25 18:30:00.000000+0000 |     sales |          HR |   Sakshi |  20000
+      2 | 2012-04-30 18:30:00.000000+0000 |  Software |          SD |     Diya |  30000
+      4 | 2013-05-03 18:30:00.000000+0000 |  Software |    Designer |  Atharva |  24000
+      3 | 2013-03-01 18:30:00.000000+0000 | Marketing |     Manager |   Hemang |  20000
+
+(4 rows)
+cqlsh:employee> select * from employee_info ORDER BY salary ASC;
+InvalidRequest: Error from server: code=2200 [Invalid query] message="ORDER BY is only supported when the partition key is restricted by an EQ or an IN."
+cqlsh:employee> select * from employee_info WHERE emp_id IN(1,2,3,4) ORDER BY salary ASC;
+InvalidRequest: Error from server: code=2200 [Invalid query] message="Order by is currently only supported on the clustered columns of the PRIMARY KEY, got salary"
+cqlsh:employee> alter table employee_info add project text;
+cqlsh:employee> update employee_info set project='Samsung' where empid=4;
+InvalidRequest: Error from server: code=2200 [Invalid query] message="Undefined column name empid in table employee.employee_info"
+cqlsh:employee> update employee_info set project='Samsung' where emp_id=4;
+cqlsh:employee> select * from employee_info;
+
+ emp_id | date_of_joining                 | dept_name | designation | emp_name | project | salary
+--------+---------------------------------+-----------+-------------+----------+---------+--------
+      1 | 2012-03-25 18:30:00.000000+0000 |     sales |          HR |   Sakshi |    null |  20000
+      2 | 2012-04-30 18:30:00.000000+0000 |  Software |          SD |     Diya |    null |  30000
+      4 | 2013-05-03 18:30:00.000000+0000 |  Software |    Designer |  Atharva | Samsung |  24000
+      3 | 2013-03-01 18:30:00.000000+0000 | Marketing |     Manager |   Hemang |    null |  20000
+
+(4 rows)
+
+cqlsh:employee> BEGIN BATCH INSERT INTO employee_info(Emp_Id,Emp_Name,Date_Of_Joining,Designation,Salary,Dept_Name) VALUES(5,'Samhitha','2012-05-01','SD',30000,'Software') using TTL 15;
+            ... APPLY BATCH;
+cqlsh:employee> select TTL(emp_name) from employee_info;
+
+ ttl(emp_name)
+---------------
+          null
+          null
+          null
+          null
+
+(4 rows)
+cqlsh:employee> select TTL(emp_name) from employee_info;
+
+ ttl(emp_name)
+---------------
+          null
+          null
+          null
+          null
+
+(4 rows)
+cqlsh:employee> BEGIN BATCH INSERT INTO employee_info(Emp_Id,Emp_Name,Date_Of_Joining,Designation,Salary,Dept_Name) VALUES(5,'Samhitha','2012-05-01','SD',30000,'Software') using TTL 15; APPLY BATCH;
+cqlsh:employee> select TTL(emp_name) from employee_info;
+
+ ttl(emp_name)
+---------------
+             4
+          null
+          null
+          null
+          null
+
+(5 rows)
+

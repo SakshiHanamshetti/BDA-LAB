@@ -1,0 +1,81 @@
+cqlsh> CREATE KEYSPACE Project WITH REPLICATION={
+   ... 'class':'SimpleStrategy',
+   ... 'replication_factor':1
+   ... };
+cqlsh> use Project;
+cqlsh:project> CREATE TABLE Project_details(
+           ... project_id int PRIMARY KEY,
+           ... project_name int PRIMARY KEY,
+           ... 
+cqlsh:project> CREATE TABLE Project_details(
+           ... project_id int,
+           ... project_name text,
+           ... PRIMARY KEY(project_id,project_name),
+           ... studName text,
+           ... rollNo int
+           ... );
+cqlsh:project> describe tables;
+
+project_details
+
+
+cqlsh:project> BEGIN BATCH
+           ... INSERT INTO Project_details(project_id,project_name,studName,rollNo)
+           ... VALUES(1,'Drishti','Sakshi',140)
+           ... INSERT INTO Project_details(project_id,project_name,studName,rollNo)
+           ... VALUES(2,'ABC','Ronit',130)
+           ... INSERT INTO Project_details(project_id,project_name,studName,rollNo)
+           ... VALUES(3,'DEF','Samhitha',141)
+           ... INSERT INTO Project_details(project_id,project_name,studName,rollNo)
+           ... VALUES(4,'GHI','Diya',033)
+           ... APPLY BATCH;
+cqlsh:project> select * from Project_details;
+
+ project_id | project_name | rollno | studname
+------------+--------------+--------+----------
+          1 |      Drishti |    140 |   Sakshi
+          2 |          ABC |    130 |    Ronit
+          4 |          GHI |     33 |     Diya
+          3 |          DEF |    141 | Samhitha
+
+(4 rows)
+cqlsh:project> select * from Project_details where project_id IN(1,2);
+
+ project_id | project_name | rollno | studname
+------------+--------------+--------+----------
+          1 |      Drishti |    140 |   Sakshi
+          2 |          ABC |    130 |    Ronit
+
+(2 rows)
+
+cqlsh:project> select * from Project_details where rollNo=140;
+
+ project_id | project_name | rollno | studname
+------------+--------------+--------+----------
+          1 |      Drishti |    140 |   Sakshi
+
+(1 rows)
+cqlsh:project> alter table Project_details add email set<text>;
+cqlsh:project> select * from Project_details;
+
+ project_id | project_name | email | rollno | studname
+------------+--------------+-------+--------+----------
+          1 |      Drishti |  null |    140 |   Sakshi
+          2 |          ABC |  null |    130 |    Ronit
+          4 |          GHI |  null |     33 |     Diya
+          3 |          DEF |  null |    141 | Samhitha
+
+(4 rows)
+cqlsh:project> UPDATE project_details SET email={'riteesh@gmail.com','sakshi@gmail.com'} where project_id=1;
+InvalidRequest: Error from server: code=2200 [Invalid query] message="Some clustering keys are missing: project_name"
+cqlsh:project> UPDATE project_details SET email=email+{'riteesh@gmail.com','sakshi@gmail.com'} where project_id=1 and project_name='Drishti';
+cqlsh:project> select * from Project_details;
+
+ project_id | project_name | email                                     | rollno | studname
+------------+--------------+-------------------------------------------+--------+----------
+          1 |      Drishti | {'riteesh@gmail.com', 'sakshi@gmail.com'} |    140 |   Sakshi
+          2 |          ABC |                                      null |    130 |    Ronit
+          4 |          GHI |                                      null |     33 |     Diya
+          3 |          DEF |                                      null |    141 | Samhitha
+
+

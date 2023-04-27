@@ -1,0 +1,87 @@
+hadoop@bmscecse-HP-Elite-Tower-600-G9-Desktop-PC:~$ start-all.sh
+WARNING: Attempting to start all Apache Hadoop daemons as hadoop in 10 seconds.
+WARNING: This is not a recommended production deployment configuration.
+WARNING: Use CTRL-C to abort.
+Starting namenodes on [localhost]
+Starting datanodes
+Starting secondary namenodes [bmscecse-HP-Elite-Tower-600-G9-Desktop-PC]
+Starting resourcemanager
+Starting nodemanagers
+hadoop@bmscecse-HP-Elite-Tower-600-G9-Desktop-PC:~$ jps
+8388 Jps
+7191 DataNode
+6999 NameNode
+7931 NodeManager
+7756 ResourceManager
+7468 SecondaryNameNode
+hadoop@bmscecse-HP-Elite-Tower-600-G9-Desktop-PC:~$ hdfs fs -ls /
+hadoop@bmscecse-HP-Elite-Tower-600-G9-Desktop-PC:~$ hadoop fs -mkdir /sakshi
+hadoop@bmscecse-HP-Elite-Tower-600-G9-Desktop-PC:~$ hadoop fs -ls /
+Found 1 items
+drwxr-xr-x   - hadoop supergroup          0 2023-04-27 11:34 /sakshi
+hadoop@bmscecse-HP-Elite-Tower-600-G9-Desktop-PC:~$ cat >file1.txt
+abc
+def
+ghihadoop@bmscecse-HP-Elite-Tower-600-G9-Desktop-PC:~$ hadoop fs -put /home/hadoop/file1.txt /sakshi
+hadoop@bmscecse-HP-Elite-Tower-600-G9-Desktop-PC:~$ hadoop fs -ls /sakshi
+Found 1 items
+-rw-r--r--   1 hadoop supergroup         11 2023-04-27 11:47 /sakshi/file1.txt
+hadoop@bmscecse-HP-Elite-Tower-600-G9-Desktop-PC:~$ hadoop fs -cat /sakshi/file1.txt
+abc
+def
+hadoop@bmscecse-HP-Elite-Tower-600-G9-Desktop-PC:~$ hadoop fs -mkdir /diya
+hadoop@bmscecse-HP-Elite-Tower-600-G9-Desktop-PC:~$ hadoop fs -ls /
+Found 2 items
+drwxr-xr-x   - hadoop supergroup          0 2023-04-27 12:01 /diya
+drwxr-xr-x   - hadoop supergroup          0 2023-04-27 11:47 /sakshi
+hadoop@bmscecse-HP-Elite-Tower-600-G9-Desktop-PC:~$ hadoop fs -mv /sakshi/file1.txt /diya
+hadoop@bmscecse-HP-Elite-Tower-600-G9-Desktop-PC:~$ hadoop fs -ls /diya
+Found 1 items
+-rw-r--r--   1 hadoop supergroup         11 2023-04-27 11:47 /diya/file1.txt
+hadoop@bmscecse-HP-Elite-Tower-600-G9-Desktop-PC:~$ hadoop fs -touch /sakshi/file2.txt
+hadoop@bmscecse-HP-Elite-Tower-600-G9-Desktop-PC:~$ hadoop fs -ls /sakshi
+Found 1 items
+-rw-r--r--   1 hadoop supergroup          0 2023-04-27 12:03 /sakshi/file2.txt
+hadoop@bmscecse-HP-Elite-Tower-600-G9-Desktop-PC:~$ hadoop fs -touch /sakshi/file3.txt
+hadoop@bmscecse-HP-Elite-Tower-600-G9-Desktop-PC:~$ hadoop fs -ls /sakshi
+Found 2 items
+-rw-r--r--   1 hadoop supergroup          0 2023-04-27 12:03 /sakshi/file2.txt
+-rw-r--r--   1 hadoop supergroup          0 2023-04-27 12:04 /sakshi/file3.txt
+hadoop@bmscecse-HP-Elite-Tower-600-G9-Desktop-PC:~$ hadoop fs -cat /sakshi/file2.txt
+abcd
+hadoop@bmscecse-HP-Elite-Tower-600-G9-Desktop-PC:~$ hadoop fs -rmdir /diya
+rmdir: `/diya': Directory is not empty
+hadoop@bmscecse-HP-Elite-Tower-600-G9-Desktop-PC:~$ hadoop fs -rm /diya/file1.txt
+Deleted /diya/file1.txt
+hadoop@bmscecse-HP-Elite-Tower-600-G9-Desktop-PC:~$ hadoop fs -rmdir /diya
+hadoop@bmscecse-HP-Elite-Tower-600-G9-Desktop-PC:~$ hadoop fs -ls /
+Found 1 items
+drwxr-xr-x   - hadoop supergroup          0 2023-04-27 12:04 /sakshi
+hadoop@bmscecse-HP-Elite-Tower-600-G9-Desktop-PC:~$ hadoop fs -du /sakshi/file2.txt
+5  5  /sakshi/file2.txt
+hadoop@bmscecse-HP-Elite-Tower-600-G9-Desktop-PC:~$ hadoop fs -appendToFile /home/hadoop/sakshi/file2.txt /sakshi/file3.txt
+appendToFile: /home/hadoop/sakshi/file2.txt
+hadoop@bmscecse-HP-Elite-Tower-600-G9-Desktop-PC:~$ hadoop fs -cat /sakshi/file3.txt
+hadoop@bmscecse-HP-Elite-Tower-600-G9-Desktop-PC:~$ hadoop fs -appendToFile /home/hadoop/file2.txt /sakshi/file3.txt
+hadoop@bmscecse-HP-Elite-Tower-600-G9-Desktop-PC:~$ hadoop fs -cat /sakshi/file3.txt
+hadoop@bmscecse-HP-Elite-Tower-600-G9-Desktop-PC:~$ hadoop fs -appendToFile /home/hadoop/file3.txt /sakshi/file2.txt
+appendToFile: /home/hadoop/file3.txt
+hadoop@bmscecse-HP-Elite-Tower-600-G9-Desktop-PC:~$ hadoop fs -cat /sakshi/file3.txt
+hadoop@bmscecse-HP-Elite-Tower-600-G9-Desktop-PC:~$ cat >abc.txt
+1234567
+hadoop@bmscecse-HP-Elite-Tower-600-G9-Desktop-PC:~$ hadoop fs -appendToFile /home/hadoop/abc.txt /sakshi/file3.txthadoop@bmscecse-HP-Elite-Tower-600-G9-Desktop-PC:~$ hadoop fs -cat /sakshi/file3.txt
+1234567
+hadoop@bmscecse-HP-Elite-Tower-600-G9-Desktop-PC:~$ hadoop fs -count /sakshi
+           1            2                 13 /sakshi
+hadoop@bmscecse-HP-Elite-Tower-600-G9-Desktop-PC:~$ hadoop fs -count /sakshi/file2.txt
+           0            1                  5 /sakshi/file2.txt
+hadoop@bmscecse-HP-Elite-Tower-600-G9-Desktop-PC:~$ hadoop fs -count /sakshi
+           1            2                 13 /sakshi
+hadoop@bmscecse-HP-Elite-Tower-600-G9-Desktop-PC:~$ hadoop fs -count /sakshi/file2.txt
+           0            1                  5 /sakshi/file2.txt
+hadoop@bmscecse-HP-Elite-Tower-600-G9-Desktop-PC:~$ hadoop fs -ls /
+Found 1 items
+drwxr-xr-x   - hadoop supergroup          0 2023-04-27 12:04 /sakshi
+hadoop@bmscecse-HP-Elite-Tower-600-G9-Desktop-PC:~$ hadoop fs -find /sakshi/file2.txt
+/sakshi/file2.txt
+

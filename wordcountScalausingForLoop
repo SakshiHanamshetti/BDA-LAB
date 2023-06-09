@@ -1,0 +1,23 @@
+scala> val counts=textFile.flatMap(line=>line.split(" ")).map(word=>(word,1)).reduceByKey(_+_)
+counts: org.apache.spark.rdd.RDD[(String, Int)] = ShuffledRDD[9] at reduceByKey at <console>:25
+
+scala> import scala.collection.immutable.ListMap
+import scala.collection.immutable.ListMap
+
+scala> val sorted=ListMap(counts.collect.sortWith(_._2 > _._2):_*)
+sorted: scala.collection.immutable.ListMap[String,Int] = Map(hello -> 3, you -> 3, how -> 2, def -> 2, are -> 1, hii -> 1, abc -> 1)
+
+scala> println(sorted)
+Map(hello -> 3, you -> 3, how -> 2, def -> 2, are -> 1, hii -> 1, abc -> 1)
+scala> for((k,v)<-sorted)
+     | {
+     | if(v>2)
+     | {
+     | print(k+",")
+     | print(v)
+     | println()
+     | }
+     | }
+hello,3
+you,3
+

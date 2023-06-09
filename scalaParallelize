@@ -1,0 +1,33 @@
+scala>  sc.parallelize(1 to 10).max()
+res9: Int = 10
+
+scala> sc.parallelize(1 to 10).min()
+res10: Int = 1
+
+scala> val sampleRDD=sc.parallelize(List(6,7,8,9,10,25,9,70,35))
+sampleRDD: org.apache.spark.rdd.RDD[Int] = ParallelCollectionRDD[12] at parallelize at <console>:25
+
+scala> sampleRDD.collect;
+res11: Array[Int] = Array(6, 7, 8, 9, 10, 25, 9, 70, 35)
+
+scala> sampleRDD.take(4)
+res12: Array[Int] = Array(6, 7, 8, 9)
+
+scala> sampleRDD.top(4)
+res13: Array[Int] = Array(70, 35, 25, 10)
+
+scala> sampleRDD.top(3)
+res14: Array[Int] = Array(70, 35, 25)
+
+scala> sc.parallelize(Seq(1,2,3,4,5,6,7,8,9))
+res17: org.apache.spark.rdd.RDD[Int] = ParallelCollectionRDD[15] at parallelize at <console>:26
+
+scala> res17.collect;
+res20: Array[Int] = Array(1, 2, 3, 4, 5, 6, 7, 8, 9)
+
+scala> sc.parallelize(Seq(1,2,3,4,5,6),2)
+res22: org.apache.spark.rdd.RDD[Int] = ParallelCollectionRDD[16] at parallelize at <console>:26
+
+scala>  res22.collect;
+res23: Array[Int] = Array(1, 2, 3, 4, 5, 6)
+

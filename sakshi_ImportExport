@@ -1,0 +1,70 @@
+bmscecse@bmscecse-HP-Elite-Tower-600-G9-Desktop-PC:~$ cqlsh
+Connected to Test Cluster at 127.0.0.1:9042
+[cqlsh 6.0.0 | Cassandra 4.0.5 | CQL spec 3.4.5 | Native protocol v5]
+Use HELP for help.
+cqlsh> describe KEYSPACES
+
+employee   students     system_distributed  system_views         
+employee2  system       system_schema       system_virtual_schema
+project    system_auth  system_traces     
+
+cqlsh> use students;
+cqlsh:students> describe tables;
+
+student_info
+
+cqlsh:students> select * FROM student_info;
+
+ rollno | dateofjoining                   | lastexampercent | studname
+--------+---------------------------------+-----------------+----------------
+      1 | 2012-03-28 18:30:00.000000+0000 |            69.6 |  Michael Storm
+      2 | 2013-02-26 18:30:00.000000+0000 |            72.5 |    Stephan Fox
+      4 | 2012-05-10 18:30:00.000000+0000 |            73.4 |     Ian String
+      3 | 2014-04-11 18:30:00.000000+0000 |            81.7 | David Flemming
+
+(4 rows)
+cqlsh:students> 
+bmscecse@bmscecse-HP-Elite-Tower-600-G9-Desktop-PC:~$ touch student_export.csv
+bmscecse@bmscecse-HP-Elite-Tower-600-G9-Desktop-PC:~$ cqlsh
+Connected to Test Cluster at 127.0.0.1:9042
+[cqlsh 6.0.0 | Cassandra 4.0.5 | CQL spec 3.4.5 | Native protocol v5]
+Use HELP for help.
+cqlsh> use students;
+cqlsh:students> COPY student_info(rollno, studname, dateofjoining, lastexampercent) TO 'student_export.csv';
+Using 16 child processes
+
+Starting copy of students.student_info with columns [rollno, studname, dateofjoining, lastexampercent].
+Processed: 4 rows; Rate:      53 rows/s; Avg. rate:      53 rows/s
+4 rows exported to 1 files in 0.092 seconds.
+cqlsh:students> 
+bmscecse@bmscecse-HP-Elite-Tower-600-G9-Desktop-PC:~$ cat student_export.csv
+1,Michael Storm,2012-03-28 18:30:00.000+0000,69.6
+3,David Flemming,2014-04-11 18:30:00.000+0000,81.7
+2,Stephan Fox,2013-02-26 18:30:00.000+0000,72.5
+4,Ian String,2012-05-10 18:30:00.000+0000,73.4
+bmscecse@bmscecse-HP-Elite-Tower-600-G9-Desktop-PC:~$ cqlsh
+Connected to Test Cluster at 127.0.0.1:9042
+[cqlsh 6.0.0 | Cassandra 4.0.5 | CQL spec 3.4.5 | Native protocol v5]
+Use HELP for help.
+cqlsh> 
+cqlsh> use employee;
+cqlsh:employee> CREATE TABLE student_info(
+            ... rollno int PRIMARY KEY,studname text,dateofjoining timestamp,lastpercentexam double);
+cqlsh:employee> COPY student_info(rollno, studname, dateofjoining, lastpercentexam) FROM 'student_export.csv';
+Using 16 child processes
+
+Starting copy of employee.student_info with columns [rollno, studname, dateofjoining, lastpercentexam].
+Processed: 4 rows; Rate:       7 rows/s; Avg. rate:      10 rows/s
+4 rows imported from 1 files in 0.391 seconds (0 skipped).
+cqlsh:employee> select * FROM student_info;
+
+ rollno | dateofjoining                   | lastpercentexam | studname
+--------+---------------------------------+-----------------+----------------
+      1 | 2012-03-28 18:30:00.000000+0000 |            69.6 |  Michael Storm
+      2 | 2013-02-26 18:30:00.000000+0000 |            72.5 |    Stephan Fox
+      4 | 2012-05-10 18:30:00.000000+0000 |            73.4 |     Ian String
+      3 | 2014-04-11 18:30:00.000000+0000 |            81.7 | David Flemming
+
+(4 rows)
+cqlsh:employee> 
+
